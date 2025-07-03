@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{{ chart_title }}</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #f4f4f4;
+    }
+    canvas {
+      max-width: 700px;
+      margin: 40px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(32, 18, 18, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <h2>{{ chart_title }}</h2>
+  <canvas id="myChart"></canvas>
+
+  {% if "Attendance" in chart_title %}
+    <script>
+      const chartType = "bar";
+      const legendPosition = "bottom";
+    </script>
+  {% else %}
+    <script>
+      const chartType = "pie";
+      const legendPosition = "top";
+    </script>
+  {% endif %}
+
+  <script>
+    const labels = {{ labels|safe }};
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: '{{ chart_title }}',
+        data: {{ counts|safe }},
+        backgroundColor: [
+          '#4caf50', '#ff9800', '#2196f3', '#f44336',
+          '#9c27b0', '#00bcd4', '#ffc107', '#8bc34a',
+          '#e91e63', '#3f51b5', '#607d8b'
+        ],
+        borderWidth: 1
+      }]
+    };
+
+    const config = {
+      type: chartType,
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: legendPosition,
+          },
+          title: {
+            display: false
+          }
+        }
+      }
+    };
+
+    new Chart(document.getElementById('myChart'), config);
+  </script>
+</body>
+</html>
+

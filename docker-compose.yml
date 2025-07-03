@@ -1,0 +1,31 @@
+
+services:
+  db: 
+    image: postgres:14
+    restart: always 
+    environment: 
+      POSTGRES_DB: ems
+      POSTGRES_USER: emsuser
+      POSTGRES_PASSWORD: emspass
+    volumes: 
+      - postgres_data:/var/lib/postgresql/data
+    ports: 
+      - "6543:5432"
+
+  web:
+    build: 
+      context: . 
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - SECRET_KEY=lc_1yip6=u+*o9u*rz0z^ns310l*p7*pf@#9e&ozdryj_e3@sr
+      - DEBUG=True
+      - DATABASE_URL=postgres://emsuser:emspass@db:5432/ems
+volumes:
+  postgres_data:
