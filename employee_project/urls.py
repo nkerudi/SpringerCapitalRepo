@@ -23,7 +23,11 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView, 
     TokenRefreshView
 )
-from employees.views import employees_per_department, monthly_attendance  
+from employees.views import employees_per_department, monthly_attendance 
+from employees.views import employees_per_department
+from attendance.views import monthly_attendance 
+from django.core.management import call_command
+from django.http import JsonResponse
 
 
 schema_view = get_schema_view(
@@ -39,6 +43,14 @@ schema_view = get_schema_view(
 )
 
 
+def trigger_migrate(request):
+    call_command('migrate')
+    return JsonResponse({'message': 'Migrations applied successfully'})
+
+def trigger_seed(request):
+    call_command('seed_data')
+    return JsonResponse({'message': 'Seed data inserted successfully'})
+
 urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
@@ -48,5 +60,7 @@ urlpatterns = [
     path('api/performance/', include('performance.urls')),
     path('chart/employees-per-department/', employees_per_department),
     path('chart/monthly-attendance/', monthly_attendance),
+    path('trigger-migrate/', trigger_migrate),
+    path('trigger-seed/', trigger_seed),
 ]
 
