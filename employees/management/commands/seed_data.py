@@ -4,7 +4,9 @@ import random
 from employees.models import Employee, Department 
 from attendance.models import Attendance
 from performance.models import Performance 
-from datetime import timedelta, date 
+from datetime import timedelta, date
+from django.core.management import call_command
+
 
 faker = Faker()
 
@@ -13,6 +15,8 @@ class Command(BaseCommand):
     help_message = 'Seed database with fake data'
     #handle old data 
     def handle(self, *args, **kwargs):
+        call_command("migrate")
+        self.stdout.write(self.style.SUCCESS("Database migrations applied."))
         #clear the old data 
         Performance.objects.all().delete()
         Attendance.objects.all().delete()
