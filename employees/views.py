@@ -9,6 +9,8 @@ from django.db.models import Count
 from employees.models import Employee
 from attendance.models import Attendance
 from django.db.models.functions import TruncMonth
+from django.http import HttpResponse
+from django.core.management import call_command
 
 
 # Create your views here.
@@ -50,3 +52,7 @@ def monthly_attendance(request):
         'counts': counts,
         'chart_title': 'Monthly Attendance Overview'
     })
+
+def trigger_seed(request):
+    call_command("seed_data")
+    return HttpResponse("Seeding complete.")
